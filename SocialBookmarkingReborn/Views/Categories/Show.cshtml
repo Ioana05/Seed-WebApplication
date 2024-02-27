@@ -1,0 +1,139 @@
+﻿@model SocialBookmarkingReborn.Models.Category
+<br />
+<div class="d-flex justify-content-between">
+
+    <!-- buton pt "inpoi" cu putin js -->
+    <button class="btn btn-outline-secondary rounded-circle" onclick="history.back()">
+        <i class="bi bi-caret-left-fill"></i>
+    </button>
+
+    <h2 class="text-center mx-3"> @Model.Name </h2>
+
+        <!-- !!!
+             vrem sa nu se vada butonul de stergere / editare categorie daca intram
+             pe contul unui alt user
+        -->
+        @if (Model.UserId == ViewBag.UserCurent)
+        {
+            ViewBag.Visibility = "visible";
+        }
+        else
+        {
+            ViewBag.Visibility = "hidden";
+        }
+
+        <div class="dropdown mx-2" style="visibility: @(ViewBag.Visibility);">
+
+        <button class="btn btn-outline-secondary rounded-circle"
+                type="button" id="dropdownOptionsCategories"
+                data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-three-dots"></i>
+        </button>
+
+        <ul class="dropdown-menu" aria-labelledby="dropdownOptionsCategories">
+            <li>
+                <a class="dropdown-item" href="/Categories/Edit/@Model.Id">
+                    Edit
+                </a>
+            </li>
+
+            <li>
+                @using (Html.BeginForm(actionName: "Delete", controllerName: "Categories",
+                method: FormMethod.Post, routeValues: new { id = Model.Id }))
+                {
+                    <button class="dropdown-item" type="submit">
+                        Delete
+                    </button>
+                }
+            </li>
+        </ul>
+
+        </div>
+
+</div>
+
+@if (Model.Description != null)
+{
+    <br />
+    <h5 class="text-center secondary-text"> @Model.Description </h5>
+}
+
+<br />
+@{
+    if (Model.Visibility == true)
+    {
+        <h5 class="text-center"> Public </h5>
+    }
+    else
+    {
+        <h5 class="text-center"> Private </h5>
+    }
+}
+<br />
+
+@if (ViewBag.NrBookmarks == 0)
+{
+    <p><b> No bookmarks </b></p>
+}
+else if (ViewBag.NrBookmarks == 1)
+{
+    <p><b> 1 bookmark </b></p>
+}
+else
+{
+    <p><b> @(ViewBag.NrBookmarks + " bookmarks") </b></p>
+}
+
+<div class="bookmarks">
+
+    @foreach (BookmarkCategory bkmkcat in Model.BookmarkCategories)
+    {
+        //afisam cate un bookmark
+        <!-- oriunde apasam pe bookmark => mergem in show -->
+        <div onclick="goToBkmkShow(@(bkmkcat.Bookmark.Id))" class="card cards category_card">
+
+            @if (bkmkcat.Bookmark.Image.StartsWith("http"))
+            {
+                <div class="embed-responsive d-flex justify-content-center w-100 h-auto">
+                    <iframe class="embed-responsive-item w-100 h-auto"
+                            src="@bkmkcat.Bookmark.Image"></iframe>
+                </div>
+            }
+            else
+            {
+                <img class="img-fluid" src="@bkmkcat.Bookmark.Image" alt="Poza Bookmark"></img>
+            }
+
+            <div class="card-body d-flex justify-content-between">
+
+                <h5 class="card-title"> @bkmkcat.Bookmark.Title </h5>
+
+                @if (Model.UserId == ViewBag.UserCurent)
+                {
+                    @using (Html.BeginForm(actionName: "DeleteFromCategory", controllerName: "Bookmarks",
+                   method: FormMethod.Post, routeValues: new { id = @bkmkcat.Id }))
+                    {
+                        <button class="btn btn-outline-danger rounded-circle btn_hidden"
+                                type="submit">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    }
+                }
+
+            </div>
+            @*
+        <div class = "d-flex justify-content-center">
+
+        <a class = "btn btn-danger"
+        href = "/Bookmarks/DeleteFromCategory/@(bkmkcat.Id)">
+        Delete from Category
+        </a>
+
+        </div>
+        *@
+
+        </div>
+
+        <br />
+    }
+</div>

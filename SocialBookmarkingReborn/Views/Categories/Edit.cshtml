@@ -1,0 +1,72 @@
+﻿@model SocialBookmarkingReborn.Models.Category
+<br />
+
+<h2 class = "text-center"> Edit Category </h2>
+ 
+<div class = "container mt-4">
+
+    <div class = "row">
+
+        <div class = "col-6 offset-3">
+
+            @using (Html.BeginForm(actionName: "Edit", controllerName: "Categories", method: FormMethod.Post,
+
+            routeValues: new { id = Model.Id }))
+
+            {
+
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+ 
+                @Html.Label("Name", "Category Name")
+
+                <br />
+
+                @Html.Editor("Name", new { htmlAttributes = new { @class = "form-control" } })
+
+                @Html.ValidationMessage("Name", null, new { @class = "text-danger" })
+ 
+                <br />
+ 
+                @Html.Label("Description", "Category Description [Optional]")
+
+                <br />
+
+                @Html.Editor("Description", new { htmlAttributes = new { @class = "form-control" } })
+
+                @Html.ValidationMessage("Description", null, new { @class = "text-danger" })
+ 
+                <br />
+ 
+                <!-- un bool pt vizibilitate -> switch =) -->
+
+                <!-- nu tine minte ce valoare avea, dar functioneaza -->
+ 
+                <div class = "form-check form-switch">
+
+                    <input class = "form-check-input" type = "checkbox"
+
+                           name = "visible" id = "visible" value = "true">
+
+                    <label class = "form-check-label" for = "visible">
+
+                        Your category will be visible to other users
+
+                    </label>
+
+                </div>
+ 
+                <br />
+ 
+                <div class = "d-flex justify-content-center">
+
+                    <button class = "btn btn-primary" type = "submit"> Save Changes </button>
+
+                </div>
+
+            }
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,229 @@
+﻿@model SocialBookmarkingReborn.Models.ApplicationUser
+﻿@using SocialBookmarkingReborn.Models
+
+<div class="container mt-4 mb-3 p-3 d-flex justify-content-center">
+    <!<div class="cardProfil p-4">
+        <div class=" image d-flex flex-column justify-content-center align-items-center">
+
+            <div class="btn_div">
+
+            @if (Model.ProfileImage == null)
+            {
+                    @if(Model.Id == ViewBag.UserCurent)
+                    {
+                    <img class="rounded-circle btn_parent" alt="profile" src="\images\undraw_Male_avatar_g98d.png" height="200" width="200" />
+                    }
+                    else
+                    {
+                    <img class="rounded-circle" alt="profile" src="\images\undraw_Male_avatar_g98d.png" height="200" width="200" />
+                    }
+
+            }
+            else
+            {
+                @if(Model.Id == ViewBag.UserCurent)
+                    {
+                        <img class="rounded-circle btn_parent" alt="profile" src="@Model.ProfileImage" height="200" width="200" />
+                    }
+                    else
+                    {
+                        <img class="rounded-circle" alt="profile" src="@Model.ProfileImage" height="200" width="200" />
+                    }
+            }
+
+                <!-- descoperim modalul pentru schimbarea imaginii de profil -->
+                @if (Model.Id == ViewBag.UserCurent)
+                {
+                    <button class="btn btn-outline-secondary btn_center btn_hidden" data-bs-toggle="modal"
+                            data-bs-target="#changeProfileImage">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                }
+
+            </div>
+
+            <!--<span class="name mt-3"></span> -->
+            <span class="idd m-3">@Model.UserName</span>
+            <div class="d-flex flex-row justify-content-center align-items-center gap-2">
+                <span><i class="fa fa-copy"></i></span>
+            </div>
+
+        @*afisam butonul de edit doar daca profilul este chiar al utilizatorului curent*@
+        @if (Model.Id == ViewBag.UserCurent)
+        {
+                <form class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index">
+                @*<button  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</button>*@
+                    <button class="btn btn-info rounded-pill" data-bs-toggle="modal" data-bs-target="#categorii"> Edit profile </button>
+
+                </form>
+        }
+
+        @*
+            <div class=" d-flex mt-2">
+            <button class="btn1 btn-dark">Edit Profile</button>
+            </div>
+            *@
+        </div>
+    </div>
+</div>
+
+@*cele doua butoane ca userul sa aleaga daca vrea sa vada categoriile salvate de profilul pe care se afla sau pinurile salvate de el*@
+@if (ViewBag.ButtonChoice == true && !User.IsInRole("Administrator"))
+{
+    <div class="d-flex justify-content-center">
+        <a id="bookVScat" class="btn btn-secondary rounded-pill p-2 m-2"> Categories </a>
+        <a id="bookmarks" class="btn btn-outline-secondary rounded-pill p-2 m-2" href="/Users/show/@(Model.Id)/false"> Planted seeds </a>
+    </div>
+
+    <br />
+    <br />
+
+    // butonul pentru adaugarea unei noi categorii
+    @if (Model.Id == ViewBag.UserCurent )
+    {
+        <div class="add-category-wrapper d-flex justify-content-end">
+            <a class="btn btn-outline-secondary rotating-flower fs-2 me-4"
+               href="/Categories/New"
+               data-toggle="tooltip" data-bs-placement="left"
+               title="Create new Category">
+                <i class="bi bi-patch-plus w-100 h-auto"></i>
+            </a>
+        </div>
+  
+    }
+
+    <div class="row px-3 w-100">
+
+        @foreach (Category cat in Model.Categories)
+        {   // verific pentru fiecare categorie daca este publica sau privata
+
+            // daca utilizatorul curent este acelasi cu cel care detine profilul, le pot vedea si pe cele publice si pe cele private
+            @if (Model.Id == ViewBag.UserCurent)
+            {
+                <div class="col-3 mb-4 px-3">
+                    <div class="card rounded-pill border-1 category" onclick="goToCatShow(@(cat.Id))">
+
+                        <div class="card-body">
+
+                            <h5 class="text-center card-title"> @cat.Name </h5>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <br />
+            }
+            // altfel, utilizatorul le poate vedea doar pe cele publice
+            else
+            {
+                @if (cat.Visibility == true)
+                {
+                    <div class="col-3 mb-4 px-3">
+                        <div class="card rounded-pill border-1 category" onclick="goToCatShow(@(cat.Id))">
+
+                            <div class="card-body">
+
+                                <h5 class="text-center card-title"> @cat.Name </h5>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <br />
+                }
+            }
+        }
+    </div>
+
+}
+else @* daca mergem pe bookmarkurile userului *@
+{
+    if (User.IsInRole("Administrator"))
+    {
+        <div class="d-flex justify-content-center">
+            <a id="bookVScat" class="btn btn-secondary rounded-pill p-2 m-2"> Planted seeds </a>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex justify-content-center">
+            <a id="bookVScat" class="btn btn-outline-secondary rounded-pill p-2 m-2"
+               href="/Users/show/@(Model.Id)/true"> Categories </a>
+            <a id="bookVScat" class="btn btn-secondary rounded-pill p-2 m-2"> Planted seeds </a>
+        </div>
+    }
+
+    <br />
+    <br />
+
+    <div class="bookmarks container">
+
+        @foreach (Bookmark bkmk in Model.Bookmark)
+        {
+            <div onclick="goToBkmkShow(@(bkmk.Id))" class="card cards bkmk">
+
+                @if (bkmk.Image.StartsWith("http"))
+                {
+                    <div class="embed-responsive d-flex justify-content-center w-100 h-auto">
+                        <iframe class="embed-responsive-item w-100 h-auto" src="@bkmk.Image"></iframe>
+                    </div>
+                }
+                else
+                {
+                    <img class="img-fluid" src="@bkmk.Image" alt="Poza Bookmark" />
+                }
+
+                <div class="card-body">
+
+                    <h5 class="card-title text-center"> @bkmk.Title </h5>
+
+                </div>
+
+            </div>
+            <br />
+        }
+    </div>
+
+}
+
+<!-- modalul pentru schimbarea imaginii de profil -->
+<div class="modal fade" id="changeProfileImage" tabindex="-1" aria-labelledby="profilModal"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="profilModal">
+                    Change Your Profile Picture
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form enctype="multipart/form-data" asp-controller="ApplicationUsers" asp-action="UploadProfileImage">
+
+                    <label for="imagineProfil"> Upload Profile Image: </label>
+                    <input id="imagineProfil" class="form-control"
+                           type="file" name="ProfileImage" />
+
+                    <br />
+
+                    <button type="submit" class="btn btn-secondary">
+                        Submit
+                    </button>
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Quit
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>

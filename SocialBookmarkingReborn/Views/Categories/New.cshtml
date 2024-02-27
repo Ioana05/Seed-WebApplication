@@ -1,0 +1,51 @@
+﻿@model SocialBookmarkingReborn.Models.Category
+
+<br />
+
+<h2 class="text-center"> Add a New Category </h2>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-6 offset-3">
+            @using (Html.BeginForm(actionName: "New", controllerName: "Categories", method: FormMethod.Post))
+            {
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+                <input type="hidden" name="bkmkId" value="@(ViewBag.BookmarkId)">
+
+                @Html.Label("Name", "Category Name")
+                <br />
+                @Html.TextBox("Name", null, new { @class = "form-control" })
+                @Html.ValidationMessage("Name", null, new { @class = "text-danger" })
+
+                <br />
+
+                @Html.Label("Description", "Category Description [Optional]")
+                <br />
+                @Html.TextBox("Description", null, new { @class = "form-control" })
+                @Html.ValidationMessage("Description", null, new { @class = "text-danger" })
+
+                <br />
+
+                <!-- un bool pt vizibilitate -> switch =) -->
+
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox"
+                           name="visible" id="visible" value="true">
+                    <label class="form-check-label" for="visible">
+                        Your category will be visible to other users
+                    </label>
+                </div>
+
+                <br />
+
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-primary" type="submit">
+                        Add Category
+                    </button>
+                </div>
+            }
+            <br />
+        </div>
+    </div>
+</div>

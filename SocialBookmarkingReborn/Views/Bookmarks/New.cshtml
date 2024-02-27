@@ -1,0 +1,91 @@
+﻿@model SocialBookmarkingReborn.Models.Bookmark
+
+<br />
+
+<h2 class="text-center"> Add Your Bookmark </h2>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-6 offset-3">
+            <form enctype="multipart/form-data" asp-controller="Bookmarks" asp-action="New">
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+                <!-- daca adaugam o imagine din local -->
+                @if (ViewBag.Local == true)
+                {
+                    <input type="hidden" name="local" value="true">
+
+                    <label for="sursa"> Get Bookmark Media from: </label>
+                    <br />
+                    <a id="sursa" class="btn btn-secondary"> Local Storage (Image) </a>
+                    <a id="sursa" class="btn btn-outline-secondary"
+                       href="/bookmarks/new/false"> External Link (Embed Video) </a>
+
+                    <br />
+
+                    <br />
+
+                    <label for="imagine"> Upload Image: </label>
+                    <input id="imagine" class="form-control"
+                           type="file" name="BookmarkImage" />
+                    @if (ViewBag.ImageError != null)
+                    {
+                        <label for="imagine" class="text-danger">
+                            @ViewBag.ImageError
+                        </label>
+                        <br />
+                    }
+                }
+                else @* daca adaugam dintr-un link extern *@
+                {
+                    <input type="hidden" name="local" value="false">
+
+                    <label for="sursa"> Get Bookmark Media from: </label>
+                    <br />
+                    <a id="sursa" class="btn btn-outline-secondary"
+                       href="/bookmarks/new/true"> Local Storage (Image) </a>
+                    <a id="sursa" class="btn btn-secondary"> External Link (Embed Video) </a>
+
+                    <br />
+
+                    <br />
+
+                    <!-- !!! -->
+                    <label for="image"> Media Link </label>
+                    <input id="image" class="form-control" type="text" name="MediaLink" />
+                    @if (ViewBag.ImageError != null)
+                    {
+                        <label for="image" class="text-danger">
+                            @ViewBag.ImageError
+                        </label>
+                        <br />
+                    }
+                }
+
+                <br />
+
+                @Html.Label("Title", "Bookmark Title")
+                <br />
+                @Html.TextBox("Title", null, new { @class = "form-control" })
+                @Html.ValidationMessage("Title", null, new { @class = "text-danger" })
+
+                <br />
+
+                @Html.Label("Description", "Bookmark Description [Optional]")
+                <br />
+                @Html.TextBox("Description", null, new { @class = "form-control" })
+                @Html.ValidationMessage("Description", null, new { @class = "text-danger" })
+
+                <br />
+
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-primary" type="submit"> Add Bookmark </button>
+                </div>
+
+            </form>
+
+            <br />
+
+        </div>
+    </div>
+</div>

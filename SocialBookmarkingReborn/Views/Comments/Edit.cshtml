@@ -1,0 +1,29 @@
+﻿@model SocialBookmarkingReborn.Models.Comment
+
+@{
+    ViewBag.Title = "Edit";
+}
+<h2 class="text-center">Edit Comment</h2>
+<br />
+
+<div class="d-flex justify-content-center">
+    @using (Html.BeginForm(controllerName: "Comments", actionName: "Edit",
+    method: FormMethod.Post, routeValues: new { id = Model.Id }))
+
+    {
+        @Html.Label("Content", "Comment Content:")
+
+        <br />
+
+        @Html.Editor("Content", new { @class = "form-control" })
+        <br />
+
+        @Html.ValidationMessage("Content", null, new { @class = "text-danger" })
+
+        <br />
+        <br />
+
+        <button class="btn btn-primary" type="submit"> Edit </button>
+
+    }
+</div>

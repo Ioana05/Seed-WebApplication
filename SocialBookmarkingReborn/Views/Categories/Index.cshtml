@@ -1,0 +1,33 @@
+﻿<h2 class="text-center"> Afisare Categorii </h2>
+<br />
+
+<div class="row">
+
+    @foreach (Category cat in ViewBag.Categories)
+    {
+        <div class="col-4 mb-4">
+            <div class="card">
+
+                <div class="card-body">
+
+                    <h5 class="card-title text-center"> @cat.Name </h5>
+
+                </div>
+
+                <div class="d-flex justify-content-around">
+                    <a class="btn btn-outline-primary" href="/Categories/Show/@cat.Id"> Afisare </a>
+                    @using (Html.BeginForm(actionName: "Delete", controllerName: "Categories",
+                   method: FormMethod.Post, routeValues: new { id = cat.Id }))
+                    {
+                        <button class="btn btn-outline-danger" type="submit"> Stergere </button>
+                    }
+
+                </div>
+                <br />
+
+            </div>
+        </div>
+
+        <br />
+    }
+</div>

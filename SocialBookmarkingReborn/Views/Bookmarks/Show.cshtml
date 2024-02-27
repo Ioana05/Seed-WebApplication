@@ -1,0 +1,578 @@
+﻿@model SocialBookmarkingReborn.Models.Bookmark
+
+<!-- buton pt "inpoi" cu putin js -->
+<button class="btn btn-outline-secondary rounded-circle mt-2" onclick="history.back()">
+    <i class="bi bi-caret-left-fill"></i>
+</button>
+
+<br />
+<br />
+
+<div class="card">
+
+    <div class="card-body row no-padding">
+
+        <!-- doua coloane - pe una avem continutul media - pe cealalta tot restul -->
+
+        <div class="col-6">
+
+            <!-- trebuie sa vedem ce fel de media avem stocata  -->
+            @if (Model.Image.StartsWith("http"))
+            {
+                <div class="w-100 h-100 embed-responsive d-flex justify-content-center">
+                    <iframe id="img" width="560" height="315" class="embed-responsive-item"
+                            src="@Model.Image"></iframe>
+                </div>
+            }
+            else
+            {
+                <img id="img" src="@Model.Image" alt="Poza Bookmark"
+                     class="img-fluid w-100 h-auto rounded-1">
+            }
+
+
+        </div>
+
+        <div id="div-comms" class="col-6 d-flex flex-column p-3 pe-4">
+
+            <div id="before-comms" class="pb-3">
+
+                <div class="d-flex justify-content-end">
+
+                    @if (ViewBag.EsteUser)
+                    {
+                        <!-- descoperim un modal de unde alegem in ce categorie sa salvam bookmarkul -->
+                        <a class="btn btn-primary rounded-pill" data-bs-toggle="modal"
+                           data-bs-target="#categorii"> Save </a>
+                    }
+
+                    <!-- afisam butoanele de edit / stergere doar daca avem dreptul -->
+                    @if (ViewBag.EsteCreator || ViewBag.EsteAdmin)
+                    {
+                        <div class="dropdown mx-2">
+
+                            <button class="btn btn-outline-secondary rounded-circle"
+                                    type="button" id="dropdownOptions"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots"></i>
+                            </button>
+
+                            <ul class="dropdown-menu rounded-2" aria-labelledby="dropdownOptions">
+                                @if (ViewBag.EsteCreator)
+                                {
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href="/Bookmarks/Edit/@Model.Id">
+                                            Edit
+                                        </a>
+                                    </li>
+                                }
+
+                                <li>
+                                    @using (Html.BeginForm(actionName: "Delete", controllerName: "Bookmarks",
+                                   method: FormMethod.Post, routeValues: new { id = Model.Id }))
+                                    {
+                                        <button class="dropdown-item" type="submit">
+                                            Delete
+                                        </button>
+                                    }
+                                </li>
+                            </ul>
+                        </div>
+                    }
+
+                </div>
+
+                <h5 class="card-title"> <b> @Model.Title </b> </h5>
+                <p class="card-text">  @Model.Description </p>
+                <a class="card-text secondary-text" href="/ApplicationUsers/Show/@Model.User.Id">
+                    <img class="bookmark_pic rounded-circle img-fluid m-1" src="@Model.User.ProfileImage" />
+                    <b> @Model.User.UserName </b>
+                </a>
+
+            </div>
+
+
+
+            @* Afisare comentarii impreuna cu butoanele de editare si stergere*@
+            
+            <div id="comms" class="overflow-auto">
+
+                @foreach (var comm in Model.Comments)
+                {
+                    <div class="container">
+                        <div class="row px-0 mx-0">
+
+                            <div class="col-md-2"></div>
+                            <div class="col-md-8 comment py-2">
+
+                                <div>
+
+                                    <div class="d-flex justify-content-between">
+
+                                        <a class="secondary-text mb-2"
+                                           href="/ApplicationUsers/Show/@comm.User.Id">
+
+                                            <img class="img-fluid rounded-circle comm_pic"
+                                                 src="@comm.User.ProfileImage" />
+
+                                          <b> @(comm.User.UserName)</b>
+
+                                        </a>
+
+                                        @* butoane de edit / delete comment daca avem dreptul *@
+                                        @if (comm.UserId == ViewBag.UserCurent || User.IsInRole("Administrator"))
+                                        {
+                                            <div class="dropdown mx-2">
+
+                                                <button class="btn btn-outline-secondary rounded-circle"
+                                                        type="button" id="dropdownComments"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </button>
+
+                                                <ul class="dropdown-menu rounded-2"
+                                                    aria-labelledby="dropdownComments">
+                                                    @if (comm.UserId == ViewBag.UserCurent)
+                                                    {
+                                                        <li>
+                                                            <a class="dropdown-item"
+                                                               href="/Comments/Edit/@comm.Id">
+                                                                Edit
+                                                            </a>
+                                                        </li>
+                                                    }
+
+                                                    <li>
+                                                        @using (Html.BeginForm(actionName: "Delete", controllerName: "Comments",
+                                                       method: FormMethod.Post, routeValues: new { id = comm.Id }))
+                                                        {
+                                                            <button class="dropdown-item" type="submit">
+                                                                Delete
+                                                            </button>
+                                                        }
+                                                    </li>
+                                                </ul>
+                                            </div>
+
+                                        }
+
+                                    </div>
+
+                                    <p class="ps-4 " > @comm.Content </p>
+                                    
+                                    <!-- vrem o afisare draguta a "cu cat timp in urma a fost postat comentariul" -->
+                                    @{
+                                        var timeComm = DateTime.Now - comm.Date;
+                                        if (timeComm.Days >= 1)
+                                        {
+                                            if (timeComm.Days > 1)
+                                                ViewBag.TimeComm = (timeComm.Days).ToString() + " days";
+                                            else ViewBag.TimeComm = (timeComm.Days).ToString() + " day";
+                                        }
+                                        else if (timeComm.Hours >= 1)
+                                        {
+                                            if (timeComm.Hours > 1)
+                                                ViewBag.TimeComm = (timeComm.Hours).ToString() + " hours";
+                                            else ViewBag.TimeComm = (timeComm.Hours).ToString() + " hour";
+                                        }
+                                        else
+                                        {
+                                            if (timeComm.Minutes == 1)
+                                                ViewBag.TimeComm = (timeComm.Minutes).ToString() + " minute";
+                                            else ViewBag.TimeComm = (timeComm.Minutes).ToString() + " minutes";
+                                        }
+                                        ViewBag.TimeComm = ViewBag.TimeComm + " ago";
+                                    }
+                                    <div class = "time" style="font-size: xx-small"> @ViewBag.TimeComm </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-2"></div>
+
+                        </div>
+
+                    </div>
+                    <br />
+                }
+            </div>
+
+            <div id="after-comms" class="d-flex justify-content-between pt-3">
+
+                <!-- vrem o afisare draguta a "cu cat timp in urma a fost postat bookmarkul" -->
+                @{
+                    var time = DateTime.Now - Model.Date;
+                    if (time.Days >= 1)
+                    {
+                        if (time.Days > 1)
+                            ViewBag.Time = (time.Days).ToString() + " days";
+                        else ViewBag.Time = (time.Days).ToString() + " day";
+                    }
+                    else if (time.Hours >= 1)
+                    {
+                        if (time.Hours > 1)
+                            ViewBag.Time = (time.Hours).ToString() + " hours";
+                        else ViewBag.Time = (time.Hours).ToString() + " hour";
+                    }
+                    else
+                    {
+                        if (time.Minutes == 1)
+                            ViewBag.Time = (time.Minutes).ToString() + " minute";
+                        else ViewBag.Time = (time.Minutes).ToString() + " minutes";
+                    }
+                    ViewBag.Time = ViewBag.Time + " ago";
+                }
+                <p> @ViewBag.Time </p>
+
+
+                @* Afisarea formularului in care se poate adauga un comentariu *@
+
+                <form method="post" action="/Bookmarks/Show/@Model.Id">
+
+                    <div class="our_form form_send input-group rounded-pill">
+
+                        <input type="hidden" name="BookmarkId" value="@Model.Id" />
+
+                        <input type="text" class="form_input send_input form-control bg-transparent"
+                               name="Content" placeholder="Leave a commment" />
+
+                        @Html.ValidationMessage("Content", null, new { @class = "text-danger" })
+
+                        <span class="input-group-append">
+                            <button class="btn btn-success bg-transparent border-0" type="submit">
+                                <i class="form_icon send_icon bi bi-send-fill"></i>
+                            </button>
+                        </span>
+                    </div>
+
+                </form>
+
+
+                <!-- afisam partea de reactii doar daca suntem inregistrati -->
+                @if (ViewBag.EsteUser)
+                {
+                    <div class="d-flex justify-content-end">
+
+                        <!-- sa ne activeze un modal -->
+                        <button type="button" class="btn btn-outline-secondary mx-2"
+                                data-bs-toggle="modal" data-bs-target="#voturi">
+                            @(Model.NrVotes + " votes")
+                        </button>
+
+                        <!-- daca am dat deja reactie vrem sa ne apara apasata
+                             + eventual chiar reactia pe care am dat-o -->
+                        @if (ViewBag.Vote == "true")
+                        {
+                            @* daca dam iara click pe reactie => o putem sterge
+                    sau edita - in orice caz extindem collapseul -
+                    dar cu reactia pe care am dat-o apasata*@
+
+                            <a class="btn btn-@ViewBag.Color" data-bs-toggle="collapse"
+                               href="#collapseReactiiEdit" role="button" aria-expanded="false"
+                               aria-controls="collapseReactiiEdit">
+                                <i class="bi bi-@ViewBag.VoteName"></i>
+                            </a>
+
+                        }
+                        else
+                        {
+                            <!-- vrem sa se descopere posibilele reactii -->
+                            <a class="btn btn-outline-danger" data-bs-toggle="collapse"
+                               href="#collapseReactii" role="button" aria-expanded="false"
+                               aria-controls="collapseReactii">
+                                <i class="bi bi-heart"></i>
+                            </a>
+                        }
+
+                    </div>
+                }
+
+
+            </div>
+
+
+            <!-- collapse-ul pt reactii -->
+            <!-- de fapt New pt Vote -->
+            <div class="row">
+                <div class="col d-flex justify-content-end">
+                    <div class="collapse" id="collapseReactii">
+                        <br />
+                        <div class="btn-group" role="group">
+                            @using (Html.BeginForm(actionName: "New", controllerName: "Votes",
+                            method: FormMethod.Post, routeValues: new
+                            {
+                               id = Model.Id,
+                               name = "hand-thumbs-up-fill"
+                            }))
+                            {
+                                <button type="submit" class="btn btn-outline-primary">
+                                    <i class="bi bi-hand-thumbs-up-fill"></i>
+                                </button>
+                            }
+
+                            @using (Html.BeginForm(actionName: "New", controllerName: "Votes",
+                            method: FormMethod.Post, routeValues: new
+                            {
+                               id = Model.Id,
+                               name = "heart-fill"
+                            }))
+                            {
+                                <button type="submit" class="btn btn-outline-danger">
+                                    <i class="bi bi-heart-fill"></i>
+                                </button>
+                            }
+
+                            @using (Html.BeginForm(actionName: "New", controllerName: "Votes",
+                            method: FormMethod.Post, routeValues: new
+                            {
+                               id = Model.Id,
+                               name = "emoji-laughing-fill"
+                            }))
+                            {
+                                <button type="submit" class="btn btn-outline-warning">
+                                    <i class="bi bi-emoji-laughing-fill"></i>
+                                </button>
+                            }
+
+                            @using (Html.BeginForm(actionName: "New", controllerName: "Votes",
+                            method: FormMethod.Post, routeValues: new
+                            {
+                               id = Model.Id,
+                               name = "lightbulb-fill"
+                            }))
+                            {
+                                <button type="submit" class="btn btn-outline-info">
+                                    <i class="bi bi-lightbulb-fill"></i>
+                                </button>
+                            }
+
+                            @using (Html.BeginForm(actionName: "New", controllerName: "Votes",
+                            method: FormMethod.Post, routeValues: new
+                            {
+                               id = Model.Id,
+                               name = "emoji-surprise-fill"
+                            }))
+                            {
+                                <button type="submit" class="btn btn-outline-success">
+                                    <i class="bi bi-emoji-surprise-fill"></i>
+                                </button>
+                            }
+
+                            @*am incercat sa adaug atributul asta
+                            -> onclick = "this.form.submit()"
+                            si sa fac buttonul din label de type submit
+                            -> as putea sa trimit pt fiecare numele ca
+                            si parametru al rutei... -> un link nu poate sa
+                            imi cheme post
+                            => facem 5 form-uri
+
+                            am nevoie de rute pt post?! NUP
+
+                            nu uita s-urile de la controllere pls*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Edit pt Voturi -->
+            <!-- de fapt New pt Vote -->
+            <div class="row">
+                <div class="col d-flex justify-content-end">
+                    <div class="collapse" id="collapseReactiiEdit">
+                        <br />
+                        <div class="btn-group" role="group">
+                            @using (Html.BeginForm(actionName: "Edit", controllerName: "Votes",
+                            method: FormMethod.Post, routeValues: new
+                            {
+                               id = ViewBag.VoteId,
+                               name = "hand-thumbs-up-fill"
+                            }))
+                            {
+                                <button type="submit" class="btn btn@(ViewBag.Like)-primary">
+                                    <i class="bi bi-hand-thumbs-up-fill"></i>
+                                </button>
+                            }
+
+                            @using (Html.BeginForm(actionName: "Edit", controllerName: "Votes",
+                            method: FormMethod.Post, routeValues: new
+                            {
+                               id = ViewBag.VoteId,
+                               name = "heart-fill"
+                            }))
+                            {
+                                <button type="submit" class="btn btn@(ViewBag.Heart)-danger">
+                                    <i class="bi bi-heart-fill"></i>
+                                </button>
+                            }
+
+                            @using (Html.BeginForm(actionName: "Edit", controllerName: "Votes",
+                            method: FormMethod.Post, routeValues: new
+                            {
+                               id = ViewBag.VoteId,
+                               name = "emoji-laughing-fill"
+                            }))
+                            {
+                                <button type="submit" class="btn btn@(ViewBag.Haha)-warning">
+                                    <i class="bi bi-emoji-laughing-fill"></i>
+                                </button>
+                            }
+
+                            @using (Html.BeginForm(actionName: "Edit", controllerName: "Votes",
+                            method: FormMethod.Post, routeValues: new
+                            {
+                               id = ViewBag.VoteId,
+                               name = "lightbulb-fill"
+                            }))
+                            {
+                                <button type="submit" class="btn btn@(ViewBag.Smart)-info">
+                                    <i class="bi bi-lightbulb-fill"></i>
+                                </button>
+                            }
+
+                            @using (Html.BeginForm(actionName: "Edit", controllerName: "Votes",
+                            method: FormMethod.Post, routeValues: new
+                            {
+                               id = ViewBag.VoteId,
+                               name = "emoji-surprise-fill"
+                            }))
+                            {
+                                <button type="submit" class="btn btn@(ViewBag.Wow)-success">
+                                    <i class="bi bi-emoji-surprise-fill"></i>
+                                </button>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- gata Edit pt Voturi =) -->
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- modalul pentru afisarea voturilor -->
+<div class="modal fade" id="voturi" tabindex="-1" aria-labelledby="voturiModal"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="voturiModal"> Votes </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <ul>
+                    @foreach (Vote vote in Model.Votes)
+                    {
+                        <li class="row">
+                            <div class="col-6 d-flex justify-content-center">
+                                <!-- trebuie sa ma duc sa-i iau utilizatorul -->
+                                <a class="secondary-text"
+                                   href="/ApplicationUsers/Show/@vote.User.Id">
+
+                                    <img class="img-fluid rounded-circle vote_pic"
+                                         src="@vote.User.ProfileImage" />
+
+                                    @vote.User.UserName
+
+                                </a>
+                            </div>
+
+                            <div class="col-6 d-flex justify-content-center">
+                                <button class="btn btn-outline-secondary">
+                                    <i class="bi bi-@vote.Name"></i>
+                                </button>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Close
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<br />
+<br />
+
+<!-- modalul pentru afisarea categoriilor -->
+<div class="modal fade" id="categorii" tabindex="-1" aria-labelledby="categoriiModal"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- titlu -->
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="categoriiModal"> Choose a Category </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+
+
+            <div class="modal-body">
+                <!-- adaugarea unei noi categorii cu bookmark-ul respectiv -->
+
+                <a class="btn btn-secondary rounded-pill mb-4"
+                   href="/Categories/New/@(Model.Id)">
+                    Add to a New Category <i class="bi bi-plus"></i>
+                </a>
+
+                <ul>
+                    @foreach (Category cat in ViewBag.Categories)
+                    {
+                        <li class="d-flex justify-content-between mb-2">
+
+                            <h6> @cat.Name </h6>
+
+                            @using (Html.BeginForm(actionName: "AddToCategory",
+                           controllerName: "Bookmarks", method: FormMethod.Post))
+                            {
+                                @Html.Hidden("BookmarkId", Model.Id)
+                                @Html.Hidden("CategoryId", cat.Id)
+
+                                <!-- vreau sa difere butonul in functie de
+                                daca am mai salvat sau nu bkmk-ul in
+                                categoria respectiva -->
+                                @if (Array.IndexOf(ViewBag.CategoriiSalvate, cat.Id) >= 0)
+                                {
+                                    <button class="btn btn-outline-secondary rounded-circle">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-outline-success rounded-circle">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                }
+
+                            }
+
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Close
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>

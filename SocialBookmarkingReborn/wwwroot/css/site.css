@@ -1,0 +1,414 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    background-color: #ecf7ff;
+    margin-bottom: 60px;
+    height: 100%;
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+
+h1 {
+    color: #5c6e7a;
+}
+
+h2, h5, h6, p {
+    color: #738a99;
+}
+
+
+a {
+    text-decoration: none;
+}
+
+.cardProfile {
+    border: none;
+}
+
+/* stilizari butoane */
+
+.btn-secondary {
+    background-color: #738a99;
+    border-color: transparent;
+}
+
+.btn-secondary:hover {
+    background-color: #667d8c;
+    border-color: transparent;
+}
+
+.btn-outline-secondary {
+    border-color: transparent;
+    color: #738a99;
+}
+
+.btn-outline-secondary:hover,
+.btn-outline-secondary:active,
+.btn-outline-secondary.dropdown-toggle.show {
+    color: #5c6e7a;
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.btn:focus, .btn:active:focus,
+.btn.dropdown-toggle.show:focus {
+    box-shadow: none !important;
+}
+
+.btn-primary {
+    background-color: #93b2c4;
+    border-color: transparent;
+}
+
+.btn-primary:hover {
+    background-color: #839eae;
+    border-color: transparent;
+    box-shadow: 0 0 2px 0 #a4c6da;
+}
+
+/* !!! am mai schimbat o clasa */
+.btn-outline-success {
+    color: #899f9c;
+    border-color: #899f9c;
+}
+
+.btn-outline-success:hover {
+        background-color: #899f9c;
+        border-color: transparent;
+}
+
+
+.secondary-text {
+    color: #738a99;
+}
+
+a.secondary-text:hover {
+    color: #5c6e7a;
+}
+
+/* tooltips */
+.tooltip-inner {
+    background-color: #738a99;
+}
+
+.bs-tooltip-start .tooltip-arrow::before,
+.bs-tooltip-auto[data-popper-placement^=left] .tooltip-arrow::before {
+    border-left-color: #738a99;
+}
+
+
+/*ne ocupam de cardul principal din show*/
+.card {
+    border-radius: 5%;
+    background: rgba( 255, 255, 255, 0.15 );
+    box-shadow: 0 8px 16px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 0.5px );
+    -webkit-backdrop-filter: blur( 0.5px );
+    border-radius: 10px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
+}
+
+.card-body {
+    color: inherit;
+}
+
+#img {
+    border-radius: 5%;
+}
+.wrapper {
+    display: inline-block;
+}
+
+.page-link {
+    color: #738a99;
+    border-color: transparent;
+    background-color: transparent;
+}
+
+.page-link:hover {
+    color: #738a99;
+    background-color: #d4dee5;
+}
+
+/* index-ul bookmark-urilor */
+
+.bookmarks {
+    column-count: 4;
+    column-gap: 15px;
+    max-width: 100%;
+    margin: 30px auto;
+}
+
+.bookmarks > div {
+    display: inline-block;
+    background: #fff;
+    border-radius: 5px;
+    color: #666;
+    margin-bottom: 1em;
+}
+
+/*
+.bookmarks {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.bookmarks > div {
+    width: 22%;
+    margin: 15px;
+}*/
+
+/*
+.bookmarks > div:nth-child(4n + 3) {
+    break-after: avoid;
+}*/
+
+.bookmarks > div > div:not([class~='embed-responsive']) {
+        padding: 1em 1em 1em 1em;
+}
+
+.bookmarks img, .bookmarks iframe {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        border-radius: 5px 5px 0 0;
+        margin: 0 0 auto 0;
+}
+
+/* buton adaugare bookmark*/
+
+.addBookmark {
+    position: fixed;
+    bottom: 4%;
+    right: 1%;
+    z-index: 10;
+    color: rgba( 31, 38, 135, 0.37 );
+}
+
+/* bara cautare */
+.our_form:focus-within {
+    box-shadow: 0 0 4px 0 #738A99;
+}
+
+.our_form:hover {
+    box-shadow: 0 0 3px 0 #738A99;
+    color: #A4B9DA;
+}
+
+.form_input {
+    border: none;
+    color: inherit;
+    opacity: 0.7;
+}
+
+.form_input:focus,
+.form_input:active,
+.form_input:active:focus,
+.form_icon:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+.form_icon {
+    opacity: 0.7;
+}
+
+.form_icon:hover {
+    opacity: 1;
+}
+
+.form_search {
+    border: 1px solid #A4B9DA;
+    color: #738A99;
+}
+
+.search_icon {
+    color: #738A99;
+}
+
+.form_send {
+    border: 1px solid #738A99;
+    color: #738A99;
+}
+
+.send_icon {
+    color: #5b707e;
+}
+/* dropdowns */
+.dropdown-menu {
+    border-color: #a4c6da;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.dropdown-item {
+    color: #738a99;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 1);
+    color: #5c6e7a;
+    opacity: 1;
+}
+
+/* modals */
+
+.modal {
+    color: #738a99;
+}
+
+.modal-header, .modal-footer, .modal-body {
+    background-color: #eff9ff;
+}
+
+/* hidden button */
+
+.btn_hidden {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s linear;
+}
+
+.category_card:hover .btn_hidden {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* buton editare poza profil */
+
+.btn_div {
+    position: relative;
+}
+
+.btn_center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.btn_div:hover .btn_hidden {
+    visibility: visible;
+    opacity: 1;
+    color: white;
+    border-color: white;
+    border-radius: 50%;
+}
+
+.btn_div:hover .btn_
+{
+    filter: brightness(50%);
+}
+
+/* no padding card for bookmark show */
+
+.no-padding {
+    padding: 0;
+}
+
+/* profile pictures */
+
+.vote_pic {
+    height: 1.5rem;
+    width: 1.5rem;
+    margin-right: 0.5rem;
+}
+.comm_pic {
+    height: 2rem;
+    width: 2rem;
+}
+
+.bookmark_pic {
+    height: 2.5rem;
+    width: 2.5rem;
+}
+
+.meniu_pic {
+    height: 3.5rem;
+    width: 3.5rem;
+    margin: 0 1rem;
+}
+
+.meniu_pic:hover {
+    box-shadow: 0 0 2px 0 #738a99;
+    filter: brightness(80%);
+}
+
+/* comments */
+
+/*
+.comment {
+    border: 1px solid #738a99;
+    border-radius: 3%;
+}
+   */
+
+
+
+.rotating-flower:hover {
+    animation: rotation 2s linear 0s infinite;
+}
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+.logo{
+    display:block;
+    height: 50px;
+    width: auto;
+}
+
+.btn-info{
+    background-color: #A4C6DA;
+    border-color: transparent;
+}
+
+.btn-info:hover {
+        background-color: #A4C6DA;
+        border-color: transparent;
+}
+.idd {
+    color: #738a99;
+}
+
+.cards:hover {
+    border-color: #eff9ff;
+    box-shadow: 0 0 4px 0 #738a99;
+}
+
+.nav-link {
+    color: #738a99;
+}
+.nav-link:hover {
+    color: #5b707e;
+}
+
+.category:hover {
+    box-shadow: 0 0 2px 0 #738a99;
+}
+
+.time{
+    color: #738A99;
+}
