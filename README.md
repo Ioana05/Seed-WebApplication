@@ -1,10 +1,10 @@
 # Seed-WebApplication
-### Seed is a Web Application inspired by Pinterest, having similar functionalities, specially created to help people find ideas.
+### Seed is a Web Application inspired by Pinterest, having similar functionalities, specially created to help people find ideas about different topics, such as: fashion, cooking, interior design etc.
 
 
 ![image](https://github.com/Ioana05/Seed-WebApplication/assets/115917247/c0229a1f-551a-4991-bf35-8e5f2df92216)
 
-## Notable features
+## Notable features:
 ### For unregistered users:
 - articles are default sorted chronologically and can be also sorted by popularity
 - article search function which matches the provided string sequence with article titles
